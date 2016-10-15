@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneAgent562", "ZoneAgent562\ZoneAgent562.csproj", "{4109169D-CFDD-47A9-9C94-990F5D180052}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pConverter", "Converter\pConverter.csproj", "{FBC43423-C3E5-41D5-98A8-CDDD19EC8444}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4109169D-CFDD-47A9-9C94-990F5D180052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4109169D-CFDD-47A9-9C94-990F5D180052}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4109169D-CFDD-47A9-9C94-990F5D180052}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4109169D-CFDD-47A9-9C94-990F5D180052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBC43423-C3E5-41D5-98A8-CDDD19EC8444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBC43423-C3E5-41D5-98A8-CDDD19EC8444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBC43423-C3E5-41D5-98A8-CDDD19EC8444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBC43423-C3E5-41D5-98A8-CDDD19EC8444}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
