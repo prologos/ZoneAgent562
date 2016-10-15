@@ -1,6 +1,7 @@
 Zone Agent v562
 =============
-ZoneAgent for A3 562 Client
+ZoneAgent for A3 562 Client.
+If you connect to the 578(Returns) client, you can see the character list.
 
 Requirements
 ------------
