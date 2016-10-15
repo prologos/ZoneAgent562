@@ -27,7 +27,7 @@ namespace ZoneAgent562
         internal ZoneAgent(FrmMain frm)
         {
             MaxPlayerCount = 0;
-            szNotice = "123";
+            szNotice = string.Empty;
             _Main = frm;
             _Players = new Dictionary<uint, Client>();
             ZA = new TcpListener(IPAddress.Any, Config.ZA.Port);
