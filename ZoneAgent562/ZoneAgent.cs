@@ -276,7 +276,7 @@ namespace ZoneAgent562
                 //bad request. if approval, ZS is crash.
                 MSG_S2C_SAY pSay = new MSG_S2C_SAY();
                 pSay.MsgHeader.dwPCID = client.Uid;
-                pSay.szWords = ByteTools.bSubString("잘못된 요청 입니다", 0x40);
+                pSay.szWords = ByteTools.bSubString("Invalid request", 0x40);
                 byte[] pSayByte = pSay.Serialize();
                 //Config.mConvert.Convert_S2C(ref pSayByte, client.Ver);
                 Write(ref client, pSayByte);
@@ -288,7 +288,7 @@ namespace ZoneAgent562
                 //account level is low
                 MSG_S2C_SAY pSay = new MSG_S2C_SAY();
                 pSay.MsgHeader.dwPCID = client.Uid;
-                pSay.szWords = ByteTools.bSubString(string.Format("{0}님의 권한으로는 해당 맵을 이용할 수 없습니다", client.Account), 0x40);
+                pSay.szWords = ByteTools.bSubString(string.Format("{0}, You can not use this map at your level", client.Account), 0x40);
                 byte[] pSayByte = pSay.Serialize();
                 //Config.mConvert.Convert_S2C(ref pSayByte, client.Ver);
                 Write(ref client, pSayByte);
