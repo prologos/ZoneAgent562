@@ -101,6 +101,9 @@ namespace ZoneAgent562
                         }
                         //encrypt후 클라이언트로 send
                         //Config.mConvert.Convert_S2C(ref packet, client.Ver);
+#if DEBUG
+                        PacketLogger.LogPacket(packet, "server_to_client", client.Character);
+#endif
                         ZoneAgent.Write(ref client, packet);
                     }
                 }

@@ -124,6 +124,9 @@ namespace ZoneAgent562
                             {
                                 //Convert: add uid, decrypt, if v578 -> v219(v562) type
                                 Config.mConvert.Convert_C2S(ref packet, client.Uid, client.Ver, client.IPadress);
+#if DEBUG
+                                PacketLogger.LogPacket(packet, "client_to_server", client.Character);
+#endif
                                 pHeader.Deserialize(ref packet);
 
                                 switch (pHeader.wProtocol)
