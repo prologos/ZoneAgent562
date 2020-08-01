@@ -6,12 +6,13 @@ using System.Text;
 
 namespace ZoneAgent562
 {
-    static class PacketLogger
+    internal static class PacketLogger
     {
         public static bool backupLogs = true;
 
         public static bool LogPacket(byte[] packet, string scenario, string character)
         {
+            return true;
             if (!Directory.Exists("PacketLogs"))
             {
                 backupLogs = false;

@@ -58,6 +58,7 @@ namespace pConverter
                 Logger.Write(string.Format("Convert_C2S: {0}", ex));
             }
         }
+
         /// <summary>
         /// ZS->CL: 형 변환이 필요한경우 578버전으로 바꾼 후 패킷을 Encrypt한다
         /// </summary>
@@ -139,6 +140,31 @@ namespace pConverter
             }
             Array.Resize(ref buffer, (int)pMsg562.GetSize());
             buffer = pMsg562.Serialize();
+        }
+    }
+
+    public class Ox1106
+    {
+        public void C2S_TO219(ref byte[] buffer)
+        {
+            MSG_C2S_1106_578 pMsg578 = new MSG_C2S_1106_578();
+            MSG_C2S_1106_219 pMsg219 = new MSG_C2S_1106_219();
+            pMsg578.Deserialize(ref buffer);
+            pMsg219.szPCName = pMsg578.szPCName;
+            pMsg219.MsgHeader.dwPCID = pMsg578.MsgHeader.dwPCID;
+            buffer = pMsg219.Serialize();
+        }
+
+        public void S2C_TO578(ref byte[] buffer)
+        {
+            MSG_S2C_1106_219 pMsg219 = new MSG_S2C_1106_219();
+            MSG_S2C_1106_578 pMsg578 = new MSG_S2C_1106_578();
+            pMsg219.Deserialize(ref buffer);
+            pMsg578.MsgHeader.dwPCID = pMsg219.MsgHeader.dwPCID;
+            pMsg578.szPCName = pMsg219.szPCName;
+            pMsg578.RandomNumer = pMsg219.RandomNumer;
+            pMsg578.Map = pMsg219.Map;
+            buffer = pMsg578.Serialize();
         }
     }
 }
