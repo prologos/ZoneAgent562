@@ -45,8 +45,16 @@
     <Compile Include="Crypt.cs" />
     <Compile Include="Marshalling.cs" />
     <Compile Include="MonsterVital.cs" />
+    <Compile Include="MSG_C2S_1106_219.cs" />
+    <Compile Include="MSG_C2S_1106_578.cs" />
+    <Compile Include="MSG_C2S_1107_219.cs" />
+    <Compile Include="MSG_C2S_1107_578.cs" />
     <Compile Include="Msg_Common_Structure.cs" />
     <Compile Include="Msg_Convert.cs" />
+    <Compile Include="MSG_S2C_1106_219.cs" />
+    <Compile Include="MSG_S2C_1106_578.cs" />
+    <Compile Include="MSG_S2C_1107_219.cs" />
+    <Compile Include="MSG_S2C_1107_578.cs" />
     <Compile Include="Msg_S2C_Structure_562.cs" />
     <Compile Include="Msg_S2C_Structure_578.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

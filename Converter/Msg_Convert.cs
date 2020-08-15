@@ -58,6 +58,7 @@ namespace pConverter
                 Logger.Write(string.Format("Convert_C2S: {0}", ex));
             }
         }
+
         /// <summary>
         /// ZS->CL: 형 변환이 필요한경우 578버전으로 바꾼 후 패킷을 Encrypt한다
         /// </summary>
@@ -139,6 +140,91 @@ namespace pConverter
             }
             Array.Resize(ref buffer, (int)pMsg562.GetSize());
             buffer = pMsg562.Serialize();
+        }
+    }
+
+    public class Ox1106
+    {
+        public void C2S_TO219(ref byte[] buffer)
+        {
+            MSG_C2S_1106_578 pMsg578 = new MSG_C2S_1106_578();
+            MSG_C2S_1106_219 pMsg219 = new MSG_C2S_1106_219();
+            pMsg578.Deserialize(ref buffer);
+            pMsg219.szPCName = pMsg578.szPCName;
+            pMsg219.MsgHeader.dwPCID = pMsg578.MsgHeader.dwPCID;
+            buffer = pMsg219.Serialize();
+        }
+
+        public void S2C_TO578(ref byte[] buffer)
+        {
+            MSG_S2C_1106_219 pMsg219 = new MSG_S2C_1106_219();
+            MSG_S2C_1106_578 pMsg578 = new MSG_S2C_1106_578();
+            pMsg219.Deserialize(ref buffer);
+            pMsg578.MsgHeader.dwPCID = pMsg219.MsgHeader.dwPCID;
+            pMsg578.szPCName = pMsg219.szPCName;
+            pMsg578.RandomNumer = pMsg219.RandomNumer;
+            pMsg578.Map = pMsg219.Map;
+            buffer = pMsg578.Serialize();
+        }
+    }
+
+    public class Ox1107
+    {
+        public void C2S_TO219(ref byte[] buffer)
+        {
+            MSG_C2S_1107_578 pMsg578 = new MSG_C2S_1107_578();
+            MSG_C2S_1107_219 pMsg219 = new MSG_C2S_1107_219();
+            pMsg578.Deserialize(ref buffer);
+            pMsg219.szPCName = pMsg578.szPCName;
+            pMsg219.MsgHeader.dwPCID = pMsg578.MsgHeader.dwPCID;
+            buffer = pMsg219.Serialize();
+        }
+
+        public void S2C_TO578(ref byte[] buffer)
+        {
+            MSG_S2C_1107_219 pMsg219 = new MSG_S2C_1107_219();
+            MSG_S2C_1107_578 pMsg578 = new MSG_S2C_1107_578();
+            pMsg219.Deserialize(ref buffer);
+            pMsg578.MsgHeader.dwPCID = pMsg219.MsgHeader.dwPCID;
+            pMsg578.szPCName = pMsg219.Name;
+            pMsg578.wMP = pMsg219.MP;
+            pMsg578.wStr = pMsg219.Str;
+            pMsg578.wMagic = pMsg219.Magic;
+            pMsg578.wDex = pMsg219.Dex;
+            pMsg578.wVit = pMsg219.Vit;
+            pMsg578.wMana = pMsg219.Mana;
+            pMsg578.dwMaxStoreHP = pMsg219.StoredHp;
+            pMsg578.dwMaxStoreMP = pMsg219.StoredMp;
+            pMsg578.wHP = pMsg219.HP;
+            pMsg578.wPoint = pMsg219.Point;
+            pMsg578.wMinATK = pMsg219.HitAttack;
+            pMsg578.wMinMATK = pMsg219.MagicAttack;
+            pMsg578.wDef = pMsg219.Defense;
+            pMsg578.wFireAtk = pMsg219.FireAttack;
+            pMsg578.wFireDef = pMsg219.FireDefence;
+            pMsg578.wIceAtk = pMsg219.IceAttack;
+            pMsg578.wIceDef = pMsg219.IceDefense;
+            pMsg578.wRightAtk = pMsg219.LightAttack;
+            pMsg578.wRightDef = pMsg219.LightDefense;
+            pMsg578.wMaxHp = pMsg219.MaxHp;
+            pMsg578.wMaxMp = pMsg219.MaxMp;
+            pMsg578.wMaxATK = pMsg219.HitAddition;
+            pMsg578.wMaxMATK = pMsg219.MagAddition;
+            //pMsg578.Inven = pMsg219.Inventory;
+            pMsg578.byTown = (byte)pMsg219.Nation;
+            pMsg578.byPetAct = pMsg219.PetActive;
+            pMsg578.byPetInven = pMsg219.PetInventory;
+            //pMsg578.WearList = pMsg219.WearList;
+            pMsg578.byClass = pMsg219.Type;
+            pMsg578.wLevel = pMsg219.Level;
+            pMsg578.dwExp = pMsg219.Exp;
+            pMsg578.dwMapIndex = pMsg219.MapIndex;
+            pMsg578.dwMapcell = pMsg219.CellIndex;
+            pMsg578.Woonz = pMsg219.Money;
+            pMsg578.dwStoreHp = pMsg219.StoredHp;
+            pMsg578.dwStoreMP = pMsg219.StoredMp;
+            pMsg578.dwLorePoint = pMsg219.Lore;
+            buffer = pMsg578.Serialize();
         }
     }
 }

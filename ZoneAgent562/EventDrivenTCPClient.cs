@@ -5,21 +5,31 @@ using System.Text;
 
 namespace ZoneAgent562
 {
-    class EventDrivenTCPClient:IDisposable
+    internal class EventDrivenTCPClient : IDisposable
     {
         #region Consts/Default values
-        const int DEFAULTTIMEOUT = 5000; //Default to 5 seconds on all timeouts
-        const int RECONNECTINTERVAL = 2000; //Default to 2 seconds reconnect attempt rate
-        #endregion
+
+        private const int DEFAULTTIMEOUT = 5000; //Default to 5 seconds on all timeouts
+        private const int RECONNECTINTERVAL = 2000; //Default to 2 seconds reconnect attempt rate
+
+        #endregion Consts/Default values
+
         #region Components, Events, Delegates, and CTOR
+
         //Timer used to detect receive timeouts
         private System.Timers.Timer tmrReceiveTimeout = new System.Timers.Timer();
+
         private System.Timers.Timer tmrSendTimeout = new System.Timers.Timer();
         private System.Timers.Timer tmrConnectTimeout = new System.Timers.Timer();
+
         public delegate void delDataReceived(EventDrivenTCPClient sender, object data);
+
         public event delDataReceived DataReceived;
+
         public delegate void delConnectionStatusChanged(EventDrivenTCPClient sender, ConnectionStatus status);
+
         public event delConnectionStatusChanged ConnectionStatusChanged;
+
         public enum ConnectionStatus
         {
             NeverConnected,
@@ -34,6 +44,7 @@ namespace ZoneAgent562
             SendFail_NotConnected,
             Error
         }
+
         public EventDrivenTCPClient(IPAddress ip, int port, byte id = 200, bool autoreconnect = true)
         {
             this._ID = id;
@@ -55,23 +66,29 @@ namespace ZoneAgent562
 
             ConnectionState = ConnectionStatus.NeverConnected;
         }
-        #endregion
+
+        #endregion Components, Events, Delegates, and CTOR
+
         #region Private methods/Event Handlers
-        void tmrSendTimeout_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+
+        private void tmrSendTimeout_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             this.ConnectionState = ConnectionStatus.SendFail_Timeout;
             DisconnectByHost();
         }
-        void tmrReceiveTimeout_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+
+        private void tmrReceiveTimeout_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             this.ConnectionState = ConnectionStatus.ReceiveFail_Timeout;
             DisconnectByHost();
         }
-        void tmrConnectTimeout_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+
+        private void tmrConnectTimeout_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             ConnectionState = ConnectionStatus.ConnectFail_Timeout;
             DisconnectByHost();
         }
+
         private void DisconnectByHost()
         {
             this.ConnectionState = ConnectionStatus.DisconnectedByHost;
@@ -79,6 +96,7 @@ namespace ZoneAgent562
             if (AutoReconnect)
                 Reconnect();
         }
+
         private void Reconnect()
         {
             if (this.ConnectionState == ConnectionStatus.Connected)
@@ -90,8 +108,11 @@ namespace ZoneAgent562
             }
             catch { }
         }
-        #endregion
+
+        #endregion Private methods/Event Handlers
+
         #region Public Methods
+
         /// <summary>
         /// Try connecting to the remote host
         /// </summary>
@@ -101,8 +122,13 @@ namespace ZoneAgent562
                 return;
             this.ConnectionState = ConnectionStatus.Connecting;
             tmrConnectTimeout.Start();
-            this._client.BeginConnect(this._IP, this._Port, new AsyncCallback(cbConnect), this._client.Client);
+            try
+            {
+                this._client.BeginConnect(this._IP, this._Port, new AsyncCallback(cbConnect), this._client.Client);
+            }
+            catch { }
         }
+
         /// <summary>
         /// Try disconnecting from the remote host
         /// </summary>
@@ -112,6 +138,7 @@ namespace ZoneAgent562
                 return;
             this._client.Client.BeginDisconnect(true, new AsyncCallback(cbDisconnectComplete), this._client.Client);
         }
+
         /// <summary>
         /// Try sending a string to the remote host
         /// </summary>
@@ -133,6 +160,7 @@ namespace ZoneAgent562
                 doDCHost.Invoke();
             }
         }
+
         /// <summary>
         /// Try sending byte data to the remote host
         /// </summary>
@@ -141,7 +169,7 @@ namespace ZoneAgent562
         {
             if (this.ConnectionState != ConnectionStatus.Connected)
                 return;
-                //throw new InvalidOperationException("Cannot send data, socket is not connected");
+            //throw new InvalidOperationException("Cannot send data, socket is not connected");
             SocketError err = new SocketError();
             this._client.Client.BeginSend(data, 0, data.Length, SocketFlags.None, out err, new AsyncCallback(cbSendComplete), this._client.Client);
             if (err != SocketError.Success)
@@ -150,6 +178,7 @@ namespace ZoneAgent562
                 doDCHost.Invoke();
             }
         }
+
         public void Dispose()
         {
             this._client.Close();
@@ -158,8 +187,11 @@ namespace ZoneAgent562
             this.tmrSendTimeout.Dispose();
             this.tmrConnectTimeout.Dispose();
         }
-        #endregion
+
+        #endregion Public Methods
+
         #region Callbacks
+
         private void cbConnectComplete()
         {
             if (_client.Connected == true)
@@ -173,6 +205,7 @@ namespace ZoneAgent562
                 ConnectionState = ConnectionStatus.Error;
             }
         }
+
         private void cbDisconnectByHostComplete(IAsyncResult result)
         {
             var r = result.AsyncState as Socket;
@@ -186,6 +219,7 @@ namespace ZoneAgent562
                 return;
             }
         }
+
         private void cbDisconnectComplete(IAsyncResult result)
         {
             var r = result.AsyncState as Socket;
@@ -193,8 +227,8 @@ namespace ZoneAgent562
                 throw new InvalidOperationException("Invalid IAsyncResult - Could not interpret as a socket object");
             r.EndDisconnect(result);
             this.ConnectionState = ConnectionStatus.DisconnectedByUser;
-
         }
+
         private void cbConnect(IAsyncResult result)
         {
             var sock = result.AsyncState as Socket;
@@ -216,6 +250,7 @@ namespace ZoneAgent562
             var callBack = new Action(cbConnectComplete);
             callBack.Invoke();
         }
+
         private void cbSendComplete(IAsyncResult result)
         {
             var r = result.AsyncState as Socket;
@@ -236,6 +271,7 @@ namespace ZoneAgent562
                 }
             }
         }
+
         private void cbChangeConnectionStateComplete(IAsyncResult result)
         {
             var r = result.AsyncState as EventDrivenTCPClient;
@@ -243,6 +279,7 @@ namespace ZoneAgent562
                 throw new InvalidOperationException("Invalid IAsyncResult - Could not interpret as a EDTC object");
             r.ConnectionStatusChanged.EndInvoke(result);
         }
+
         private void cbDataReceived(IAsyncResult result)
         {
             var sock = result.AsyncState as Socket;
@@ -268,6 +305,7 @@ namespace ZoneAgent562
             if (DataReceived != null)
                 DataReceived.BeginInvoke(this, getBytes(dataBuffer, bytes), new AsyncCallback(cbDataRecievedCallbackComplete), this);
         }
+
         private void cbDataRecievedCallbackComplete(IAsyncResult result)
         {
             var r = result.AsyncState as EventDrivenTCPClient;
@@ -282,14 +320,18 @@ namespace ZoneAgent562
                 doDCHost.Invoke();
             }
         }
-        #endregion
+
+        #endregion Callbacks
+
         private byte[] getBytes(byte[] Buffer, int length)
         {
             byte[] dataBuff = new byte[length];
             Array.Copy(Buffer, dataBuff, length);
             return dataBuff;
         }
+
         #region Properties and members
+
         private byte _ID = 0;
         private IPAddress _IP = IPAddress.None;
         private ConnectionStatus _ConStat;
@@ -298,7 +340,8 @@ namespace ZoneAgent562
         private bool _AutoReconnect = false;
         private int _Port = 0;
         private Encoding _encode = Encoding.Default;
-        object _SyncLock = new object();
+        private object _SyncLock = new object();
+
         /// <summary>
         /// Syncronizing object for asyncronous operations
         /// </summary>
@@ -309,6 +352,7 @@ namespace ZoneAgent562
                 return _SyncLock;
             }
         }
+
         /// <summary>
         /// Encoding to use for sending and receiving
         /// </summary>
@@ -323,6 +367,7 @@ namespace ZoneAgent562
                 _encode = value;
             }
         }
+
         /// <summary>
         /// Current state that the connection is in
         /// </summary>
@@ -340,6 +385,7 @@ namespace ZoneAgent562
                     ConnectionStatusChanged.BeginInvoke(this, _ConStat, new AsyncCallback(cbChangeConnectionStateComplete), this);
             }
         }
+
         /// <summary>
         /// True to autoreconnect at the given reconnection interval after a remote host closes the connection
         /// </summary>
@@ -354,7 +400,9 @@ namespace ZoneAgent562
                 _AutoReconnect = value;
             }
         }
+
         public int ReconnectInterval { get; set; }
+
         /// <summary>
         /// Port to connect to on the remote host
         /// </summary>
@@ -365,6 +413,7 @@ namespace ZoneAgent562
                 return _ID;
             }
         }
+
         /// <summary>
         /// IP of the remote host
         /// </summary>
@@ -375,6 +424,7 @@ namespace ZoneAgent562
                 return _IP;
             }
         }
+
         /// <summary>
         /// Port to connect to on the remote host
         /// </summary>
@@ -385,6 +435,7 @@ namespace ZoneAgent562
                 return _Port;
             }
         }
+
         /// <summary>
         /// Time to wait after a receive operation is attempted before a timeout event occurs
         /// </summary>
@@ -399,6 +450,7 @@ namespace ZoneAgent562
                 tmrReceiveTimeout.Interval = (double)value;
             }
         }
+
         /// <summary>
         /// Time to wait after a send operation is attempted before a timeout event occurs
         /// </summary>
@@ -413,6 +465,7 @@ namespace ZoneAgent562
                 tmrSendTimeout.Interval = (double)value;
             }
         }
+
         /// <summary>
         /// Time to wait after a connection is attempted before a timeout event occurs
         /// </summary>
@@ -427,6 +480,7 @@ namespace ZoneAgent562
                 tmrConnectTimeout.Interval = (double)value;
             }
         }
-        #endregion
+
+        #endregion Properties and members
     }
 }

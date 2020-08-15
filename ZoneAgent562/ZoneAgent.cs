@@ -15,8 +15,10 @@ namespace ZoneAgent562
         internal static Dictionary<uint, Client> _Players;
         internal static Timer ReqTick_Sender;
         internal static Timer dcClient_Checker;
+
         //internal static Timer Notice_Sender;
         internal static string szNotice;
+
         private int MaxPlayerCount;
 
         public void Dispose()
@@ -24,6 +26,7 @@ namespace ZoneAgent562
             ReqTick_Sender.Dispose();
             dcClient_Checker.Dispose();
         }
+
         internal ZoneAgent(FrmMain frm)
         {
             MaxPlayerCount = 0;
@@ -103,6 +106,7 @@ namespace ZoneAgent562
                                         client.TcpClient.Client.Dispose();
                                     }
                                     break;
+
                                 case 0xF0: //TimeTick - Check Speed Hack
                                     if (_Players.ContainsKey(client.Uid))
                                     {
@@ -113,17 +117,22 @@ namespace ZoneAgent562
                                         client.TcpClient.Client.Dispose();
                                     }
                                     break;
+
                                 default:
                                     Logger.NewPacket("CL->ZA", packet, client.IPadress, client.Ver);
                                     client.TcpClient.Client.Dispose();
                                     break;
                             }
                             break;
+
                         case 0x03:
                             if (_Players.ContainsKey(client.Uid))
                             {
                                 //Convert: add uid, decrypt, if v578 -> v219(v562) type
                                 Config.mConvert.Convert_C2S(ref packet, client.Uid, client.Ver, client.IPadress);
+#if DEBUG
+                                PacketLogger.LogPacket(packet, "client_to_server", client.Character);
+#endif
                                 pHeader.Deserialize(ref packet);
 
                                 switch (pHeader.wProtocol)
@@ -137,9 +146,11 @@ namespace ZoneAgent562
                                         Config.mConvert.Crypter.Encrypt(ref packet, ClientVer.v562);
                                         ZoneServer.ZS[Config.AS_ID].Send(packet);
                                         break;
+
                                     case 0x1112: //Teleport packet
                                         new Thread(() => isPossibleTeleport(packet, ref client)).Start();
                                         break;
+
                                     case 0x1108: //logout
                                         //AS에 있을때는 cl->za->as : as에서 답 없음
                                         //ZS에 있을때는 1108답장 있음 ->cl
@@ -147,6 +158,7 @@ namespace ZoneAgent562
                                         Config.mConvert.Crypter.Encrypt(ref packet, ClientVer.v562);
                                         ZoneServer.ZS[client.ZoneStatus].Send(packet);
                                         break;
+
                                     default:
                                         //보내기전 패킷 암호화, ZS에 보내는 패킷은 562버전으로
                                         Config.mConvert.Crypter.Encrypt(ref packet, ClientVer.v562);
@@ -159,6 +171,7 @@ namespace ZoneAgent562
                                 client.TcpClient.Client.Dispose();
                             }
                             break;
+
                         default:
                             Logger.NewPacket("CL->ZA", packet, client.IPadress, client.Ver);
                             client.TcpClient.Client.Dispose();
@@ -373,6 +386,7 @@ namespace ZoneAgent562
             client.TcpClient.Client.Disconnect(false);
             //소켓 연결만 끊어주면 플레이어 리스트 에서는 체크 타이머에서 자동 제거 된다.
         }
+
         /// <summary>
         /// 소켓 연결상태 확인
         /// </summary>
@@ -383,6 +397,7 @@ namespace ZoneAgent562
             try { return !((s.Poll(1, SelectMode.SelectRead) && (s.Available == 0)) || !s.Connected); }
             catch { return false; }
         }
+
         /// <summary>
         /// 1초마다 클라이언트의 연결상태를 체크해서 현결 해제된 클라이언트는 제거한다.
         /// </summary>
